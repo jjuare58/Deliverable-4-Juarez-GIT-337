@@ -208,14 +208,15 @@ article h3 {
     padding: 0.4rem;
 }
 
-/* Documentation spans the full width at the bottom */
+
+/* Documentation sits below main, so the sticky guide stops before it */
 .documentation {
-    grid-column: 1 / -1;
+    max-width: var(--page-width);
+    margin: 0 auto var(--space-xl);
     padding: var(--space-md);
     background: var(--color-surface-alt);
     border-radius: var(--radius-md);
 }
-
 
 /* ---------- 6. FIGURE + PULL QUOTE ---------- */
 
