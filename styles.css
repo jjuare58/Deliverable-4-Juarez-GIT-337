@@ -322,3 +322,5 @@ figcaption {
     outline: 3px solid var(--color-focus);
     outline-offset: 3px;
 }
+
+.table-region { overflow-x: auto; }
