@@ -1,59 +1,127 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Composition Plan</title>
-        <style>
-            body{
-                font-family:Arial,sans-serif;
-                line-height:1.5;
-                max-width:90rem;
-                margin:auto;
-                padding:1rem;
-                color:#191919;
-                }
-            table{
-                width:100%;
-                border-collapse:collapse;
-                }
-            th,td{
-                padding:.6rem;
-                border:1px solid #999;
-                text-align:left;
-                vertical-align:top;
-                }
-            th{
-                background:#f1f1f1;
-                }
-        </style>
-        </head>
-        <body>
-            <h1>L6 · Composition Plan</h1>
-            <p>Complete one row for every positioned, layered, clipped, rounded, or shape-wrapped element. Duplicate rows as needed.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Element</th>
-                        <th>Content purpose</th>
-                        <th>Normal-flow baseline</th>
-                        <th>Chosen technique and why</th>
-                        <th>Containing block / stacking context</th>
-                        <th>Fallback or disengagement</th>
-                        <th>Required test</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Example only</td>
-                        <td>Replace</td>
-                        <td>Replace</td>
-                        <td>Replace</td>
-                        <td>Replace</td>
-                        <td>Replace</td>
-                        <td>Replace</td>
-                    </tr>
-                </tbody>
-            </table>
-        </body>
-        </html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Composition Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            max-width: 90rem;
+            margin: auto;
+            padding: 1rem;
+            color: #191919;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: .6rem;
+            border: 1px solid #999;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>L6 · Composition Plan</h1>
+    <p>Story: <em>Losing the Dark: Why Our Night Sky Is Disappearing</em>. One row for every positioned, layered,
+        clipped, rounded, or shape-wrapped element.</p>
+    <p>Layer scale (tokens in <code>styles.css</code>): <code>--layer-base: 0</code>, <code>--layer-raised: 10</code>
+        (pull quote), <code>--layer-sticky: 20</code> (story guide), <code>--layer-overlay: 30</code> (reserved, not
+        used).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Element</th>
+                <th>Content purpose</th>
+                <th>Normal-flow baseline</th>
+                <th>Chosen technique and why</th>
+                <th>Containing block / stacking context</th>
+                <th>Fallback or disengagement</th>
+                <th>Required test</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Badge (<code>.issue-badge</code>, "Science feature")</td>
+                <td>Labels the story type at a glance.</td>
+                <td>A small label that appears after the intro inside the header.</td>
+                <td>On wide screens, <code>position: absolute</code> inside the header pins it to the top-right corner
+                    without moving other content. <code>pointer-events: none</code> so it can never block a click.</td>
+                <td>Containing block: <code>.feature-header</code> (<code>position: relative</code>). No new stacking
+                    context (no z-index).</td>
+                <td>Below 52rem it goes back to normal flow under the intro, because at 320px it covered the eyebrow
+                    text.</td>
+                <td>320 / 768 / 1280px; long title; 200% zoom; badge never covers the title or eyebrow.</td>
+            </tr>
+            <tr>
+                <td>Story guide (<code>.story-guide</code>)</td>
+                <td>Lets readers jump to any of the 4 story sections.</td>
+                <td>A box of links that comes before the article.</td>
+                <td>On wide screens, <code>position: sticky</code> with <code>inset-block-start: 1rem</code> keeps it on
+                    screen while reading. Uses <code>--layer-sticky</code> (20).</td>
+                <td>Bounded by its parent, <code>main</code> (the grid). Creates a stacking context (sticky + z-index).
+                </td>
+                <td>Below 52rem it stays in normal flow above the article.</td>
+                <td>Sticky behavior at page and section boundaries; keyboard Tab through links; links never hidden.</td>
+            </tr>
+            <tr>
+                <td>Pull quote (<code>.pull-quote</code>)</td>
+                <td>Highlights a key quote from a NOAA scientist.</td>
+                <td>A normal blockquote between paragraphs.</td>
+                <td>On wide screens, <code>position: relative</code> plus a -1.5rem margin lets it stick out past the
+                    column edge into the grid gap. Solid background and <code>--layer-raised</code> (10) keep it clean.
+                </td>
+                <td>Containing block: its section. Creates a stacking context (relative + z-index), which sits below the
+                    sticky guide (20).</td>
+                <td>Below 52rem no negative margin, so it sits fully inside the column.</td>
+                <td>Doubled paragraph; 200% zoom; check the sticky guide never covers the quote text.</td>
+            </tr>
+            <tr>
+                <td>Figure box (<code>.feature-figure</code>)</td>
+                <td>Frames the Earth-at-night photo and its caption.</td>
+                <td>A figure with image and caption.</td>
+                <td><code>border-radius</code> (Lunaris <code>--radius-md</code>) for softer, consistent corners.</td>
+                <td>Normal flow. No new stacking context.</td>
+                <td>If unsupported, square corners. Still complete.</td>
+                <td>Visual check at all 3 widths.</td>
+            </tr>
+            <tr>
+                <td>Earth photo (<code>.feature-figure img</code>)</td>
+                <td>Shows city lights across the Americas at night.</td>
+                <td>A plain rectangular image.</td>
+                <td><code>clip-path: polygon()</code> gives slanted, editorial edges. Only dark space in the corners is
+                    trimmed.</td>
+                <td>Inside the figure. <code>clip-path</code> creates its own stacking context.</td>
+                <td>Inside <code>@supports</code>. Unsupported or disabled: a full rectangle, nothing lost.</td>
+                <td>Disable clip-path in DevTools; confirm nothing important was cut.</td>
+            </tr>
+            <tr>
+                <td>Milky Way photo (<code>.shape-portrait</code>)</td>
+                <td>Shows the dark sky people are losing, beside the wildlife section.</td>
+                <td>A round image (<code>border-radius: 50%</code>) above the text.</td>
+                <td>On wide screens, <code>float</code> + <code>shape-outside: circle(50%)</code> +
+                    <code>shape-margin: 1rem</code> wraps the text around the circle.</td>
+                <td>Containing block: its section (<code>display: flow-root</code> keeps the float inside). No new
+                    stacking context.</td>
+                <td>Inside <code>@supports</code> and the 52rem media query. Otherwise the round photo stacks above the
+                    text.</td>
+                <td>Disable shape-outside in DevTools; check 320px and 200% zoom; text stays readable.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

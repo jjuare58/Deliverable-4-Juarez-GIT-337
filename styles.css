@@ -1,132 +1,323 @@
-:root{
-    --color-text:#404040;
-    --color-surface:#fff;
-    --color-action:#8c1d40;
-    --color-accent:#ffc627;
-    --color-border:#d0d0d0;
-    --color-muted:#5c6670;
-    --space-3:1rem;
-    --radius:.5rem;
-    --measure:68ch;
-    --layer-base:0;
-    --layer-raised:10;
-    --layer-sticky:20;
-    --layer-overlay:30;
+/* =============================================
+   Losing the Dark: Why Our Night Sky Is Disappearing
+   This page uses my Module 1 "Lunaris" design system
+   (colors, fonts, spacing, focus style) plus a small
+   layer scale for the positioned and layered parts.
+   1. Tokens
+   2. Reset
+   3. Text
+   4. Header + anchored badge
+   5. Layout (Grid)
+   6. Figure + pull quote
+   7. Sticky story guide, overlap, and shapes (wide screens)
+   8. Focus
+   ============================================= */
+
+
+/* ---------- 1. TOKENS ---------- */
+
+/* My Lunaris colors, sizes, and fonts in one place */
+:root {
+    /* Colors (from Lunaris) */
+    --color-bg: #F6F1E7;
+    /* cream page background */
+    --color-surface: #FFFCF6;
+    /* boxes, figure, pull quote */
+    --color-surface-alt: #EDE5D6;
+    /* documentation background */
+    --color-text: #1D1A18;
+    /* main text, almost black */
+    --color-text-muted: #5A524B;
+    /* captions and small text */
+    --color-border: #857A6D;
+    /* borders */
+    --color-action: #9B1C1F;
+    /* red for the header and links */
+    --color-on-action: #FFFFFF;
+    /* white text on red */
+    --color-accent: #F2C94C;
+    /* gold from my Lunaris Moonlit theme, used for the badge and quote line */
+    --color-focus: #1D1A18;
+    /* keyboard focus outline */
+
+    /* Spacing (from Lunaris) */
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 3rem;
+
+    /* Sizing and corners (from Lunaris) */
+    --measure: 65ch;
+    /* keeps paragraphs from getting too wide */
+    --page-width: 72rem;
+    /* widest the page gets */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+
+    /* Fonts (from Lunaris) */
+    --font-display: "DM Serif Display", Georgia, serif;
+    --font-body: "Montserrat", Arial, sans-serif;
+
+    /* Layer scale: a few named levels instead of random big numbers */
+    --layer-base: 0;
+    /* normal content */
+    --layer-raised: 10;
+    /* the pull quote that overlaps the column edge */
+    --layer-sticky: 20;
+    /* the sticky "In this story" guide */
+    --layer-overlay: 30;
+    /* saved for pop-overs (not used yet) */
 }
-*,*::before,*::after{
-    box-sizing:border-box;
+
+
+/* ---------- 2. RESET ---------- */
+
+/* Makes padding and borders count inside an element's width */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
-html{
-    scroll-behavior:smooth;
+
+/* Smooth scrolling when the story guide links are clicked */
+html {
+    scroll-behavior: smooth;
 }
-body{
-    margin:0;
-    color:var(--color-text);
-    background:var(--color-surface);
-    font-family:Arial,sans-serif;
-    line-height:1.6;
+
+/* Removes the browser's default page margin and sets my colors and font */
+body {
+    margin: 0;
+    color: var(--color-text);
+    background: var(--color-bg);
+    font-family: var(--font-body);
+    line-height: 1.6;
 }
-.feature-header{
-    position:relative;
-    padding:clamp(2rem,7vw,6rem);
-    background:var(--color-action);
-    color:#fff;
+
+/* Makes images shrink to fit small screens without stretching */
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
 }
-.eyebrow{
-    color:var(--color-accent);
-    font-weight:700;
+
+
+/* ---------- 3. TEXT ---------- */
+
+/* Headings use my Lunaris display font */
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.2;
 }
-.lede{
-    max-width:var(--measure);
-    font-size:1.25rem;
+
+/* Keeps paragraphs at a comfortable reading width */
+p {
+    max-width: var(--measure);
 }
-.issue-badge{
-    position:absolute;
-    inset-block-start:1rem;
-    inset-inline-end:1rem;
-    padding:.5rem;
-    background:var(--color-accent);
-    color:#191919;
+
+/* Links use the Lunaris red */
+a {
+    color: var(--color-action);
 }
-main{
-    display:grid;
-    gap:2rem;
-    max-width:72rem;
-    margin:auto;
-    padding:var(--space-3);
+
+/* Thicker underline on hover */
+a:hover {
+    text-decoration-thickness: 2px;
 }
-article{
-    min-width:0;
+
+
+/* ---------- 4. HEADER + ANCHORED BADGE ---------- */
+
+/* Red header. position: relative makes it the anchor (containing block) for the badge */
+.feature-header {
+    position: relative;
+    padding: clamp(2rem, 7vw, 6rem);
+    background: var(--color-action);
+    color: var(--color-on-action);
 }
-article section{
-    display:flow-root;
-    margin-block:3rem;
-    scroll-margin-block-start:6rem;
+
+/* The small "L1 · Feature Story" label above the title */
+.eyebrow {
+    color: var(--color-on-action);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
-.story-guide{
-    align-self:start;
-    padding:1rem;
-    border:1px solid var(--color-border);
+
+/* The intro paragraph */
+.lede {
+    max-width: var(--measure);
+    font-size: 1.25rem;
 }
-.story-guide a{
-    display:block;
-    padding:.4rem;
+
+/* The badge label. On phones it sits under the intro.
+   pointer-events: none so it can never block a click. */
+.issue-badge {
+    display: inline-block;
+    margin-top: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--color-accent);
+    color: var(--color-text);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    pointer-events: none;
 }
-.feature-figure{
-    position:relative;
-    margin:0;
-    padding:1rem;
-    border:1px solid var(--color-border);
-    border-radius:var(--radius);
+
+
+/* ---------- 5. LAYOUT (Grid) ---------- */
+
+/* Grid handles the main page regions. On phones it is one column. */
+main {
+    display: grid;
+    gap: 2rem;
+    max-width: var(--page-width);
+    margin: auto;
+    padding: var(--space-md);
 }
-img{
-    display:block;
-    max-width:100%;
-    height:auto;
+
+/* Lets the article shrink inside the grid instead of overflowing */
+article {
+    min-width: 0;
 }
-.pull-quote{
-    margin:2rem 0;
-    padding:1rem;
-    border-inline-start:.4rem solid var(--color-accent);
-    font-size:1.35rem;
+
+/* flow-root keeps the floated photo inside its section.
+   scroll-margin leaves room above a heading when a guide link jumps to it. */
+article section {
+    display: flow-root;
+    margin-block: var(--space-xl);
 }
-.shape-portrait{
-    width:min(45%,20rem);
-    margin:0 1rem 1rem 0;
-    border-radius:50%;
+
+article h3 {
+    scroll-margin-block-start: 6rem;
 }
-.documentation{
-    grid-column:1/-1;
-    padding:1rem;
-    background:#f1f1f1;
+
+/* The "In this story" box */
+.story-guide {
+    align-self: start;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
 }
-@media (min-width:52rem){
-    main{
-        grid-template-columns:14rem 1fr;
+
+/* Each guide link on its own line with a bigger tap area */
+.story-guide a {
+    display: block;
+    padding: 0.4rem;
+}
+
+/* Documentation spans the full width at the bottom */
+.documentation {
+    grid-column: 1 / -1;
+    padding: var(--space-md);
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-md);
+}
+
+
+/* ---------- 6. FIGURE + PULL QUOTE ---------- */
+
+/* SHAPE 1 (border-radius): rounded corners on the figure box */
+.feature-figure {
+    margin: 0;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+/* Lighter, smaller caption text */
+figcaption {
+    margin-top: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+/* The pull quote with a gold line on its left */
+.pull-quote {
+    margin: 2rem 0;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border-inline-start: 0.4rem solid var(--color-accent);
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+}
+
+/* The person and source under the quote */
+.pull-quote footer {
+    margin-top: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text-muted);
+}
+
+/* The round photo. Everyone gets the circle (border-radius); wrapping comes later */
+.shape-portrait {
+    width: min(45%, 20rem);
+    margin: 0 var(--space-md) var(--space-md) 0;
+    border-radius: 50%;
+}
+
+
+/* ---------- 7. WIDE-SCREEN ENHANCEMENTS ---------- */
+/* On phones these turn off ("disengage") and the page stays in normal flow */
+
+@media (min-width: 52rem) {
+
+    /* Two columns: the story guide on the left, the article on the right */
+    main {
+        grid-template-columns: 14rem 1fr;
     }
-    .story-guide{
-        position:sticky;
-        inset-block-start:1rem;
-        z-index:var(--layer-sticky);
+
+    /* ANCHORED DETAIL: on bigger screens the badge pins to the header's corner */
+    .issue-badge {
+        position: absolute;
+        inset-block-start: var(--space-md);
+        inset-inline-end: var(--space-md);
+        margin-top: 0;
     }
-    .pull-quote{
-        position:relative;
-        z-index:var(--layer-raised);
-        margin-inline-start:-4rem;
-        background:var(--color-surface);;
+
+    /* STICKY: the guide sticks 1rem from the top, but only inside main (its parent) */
+    .story-guide {
+        position: sticky;
+        inset-block-start: var(--space-md);
+        z-index: var(--layer-sticky);
     }
-    @supports (shape-outside:circle(50%)){
-        .shape-portrait{
-            float:inline-start;
-            shape-outside:circle(50%);
-            shape-margin:1rem;}
+
+    /* CONTROLLED OVERLAP: the quote reaches 1.5rem past the column edge
+     It has a solid background and a raised layer so it sits cleanly on top. */
+    .pull-quote {
+        position: relative;
+        z-index: var(--layer-raised);
+        margin-inline-start: -1.5rem;
+    }
+
+    /* SHAPE 3 (shape-outside): text wraps around the round photo,
+     only if the browser supports it. Otherwise the photo stays a plain block. */
+    @supports (shape-outside: circle(50%)) {
+        .shape-portrait {
+            float: inline-start;
+            shape-outside: circle(50%);
+            shape-margin: var(--space-md);
         }
     }
-    @supports (clip-path:polygon(0 0)){
-        .feature-figure img{
-            clip-path:polygon(0 0,100% 5%,94% 100%,6% 94%);}
-        }
-        :focus-visible{
-            outline:.2rem solid var(--color-accent);
-            outline-offset:.2rem;
-        }
+}
+
+/* SHAPE 2 (clip-path): slanted edges on the feature photo, only if supported.
+   Only dark space at the corners is trimmed, so no important content is cut off. */
+@supports (clip-path: polygon(0 0)) {
+    .feature-figure img {
+        clip-path: polygon(0 0, 100% 5%, 94% 100%, 6% 94%);
+    }
+}
+
+
+/* ---------- 8. FOCUS ---------- */
+
+/* My Lunaris thick dark outline for keyboard users */
+:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
